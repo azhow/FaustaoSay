@@ -16,7 +16,7 @@ Variaveis				# A secao de variaveis inicia pela palavra reservada "Variaveis", e
 [ S ]
 Inicial					# O simbolo inicial possui uma secao propria, iniciada pela palavra "Inicial"
 [ S ]					# Essa secao possui apenas uma linha com o simbolo inicial entre colchetes.
-Regras					# A ultima secao vem encabecada pela palavra-chave "Regras"
+Regras                  # A ultima secao vem encabecada pela palavra-chave "Regras"
 [ S ] > [ NP ] [ VP ] 	# Nas regras de producao, coloca-se o simbolo da esquerda entre colchetes antes
 [ NP ] > [ N ]
 [ N ] > [ dog ]
