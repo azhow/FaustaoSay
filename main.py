@@ -1,13 +1,15 @@
 def fun(line, key, terms, ruuru):
-    for x in line.split('>')[1].split('#')[0].split(';')[0].split('] ['):
-        if key in terms:
-            x.strip().strip('[').strip(']').strip()
-        else:
-            ruuru[x.strip().strip('[').strip(']').strip()
-
+    lis = []
+    if key in terms:
+        for x in line.split('>')[1].split('#')[0].split(';')[0].split('] ['):
+            lis.append(x.strip().strip('[').strip(']').strip())
+        return lis
+    else:
+        ruuru[key] = line.strip().strip('[ ').strip(' ]')
 
 def read_file(file_path):
-    """ Reads the grammar file contents.
+    """
+    Reads the grammar file contents.
         In:
             file_path:string = File path.
         Out:
@@ -32,9 +34,7 @@ def read_file(file_path):
         elif proc == "Regras":
             # Build rules and productions following stuff from l.19x
             key = line.split('>')[0].strip().strip('[').strip(']').strip()
-            ruuru[key].productions.append(Production(*[x.strip().strip('[').strip(']').strip() if key in terms else
-                                    ruuru[x.strip().strip('[').strip(']').strip()] for x in
-                                    line.split('>')[1].split('#')[0].split(';')[0].split('] [')]))
+            ruuru[key].productions.append(Production(*[fun(line, key, terms, ruuru)]))
         else:
             proc = line.split('#')[0].strip()
 
@@ -231,7 +231,7 @@ for tree in build_trees(parse(S, "book the flight through houston")):
     tree.print_()
 """
 if __name__ == "__main__":
-    print(read_file(input("File to be read")))
+    print(read_file(input("File to be read: ")))
     #init, ruurus, terms = read_file(input("File to be read: "))
     """ Kinda the structure we need
     if init and ruurus:
