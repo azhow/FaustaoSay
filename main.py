@@ -1,3 +1,11 @@
+def fun(line, key, terms, ruuru):
+    for x in line.split('>')[1].split('#')[0].split(';')[0].split('] ['):
+        if key in terms:
+            x.strip().strip('[').strip(']').strip()
+        else:
+            ruuru[x.strip().strip('[').strip(']').strip()
+
+
 def read_file(file_path):
     """ Reads the grammar file contents.
         In:
