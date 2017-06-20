@@ -8,17 +8,29 @@ def read_file(file_path):
     """
     proc = ""
     initial_D = ""
+    ruuru = {}
+    terms = []
     for line in open(file_path, "rU"):
-        if proc == "Inicial":
+        if proc == "Terminais" and line.split('#')[0].strip() != "Terminais" and \
+        line.split('#')[0].strip() != "Variaveis":
+            terms.append(line.split('[ ')[1].split(' ]')[0])
+        elif proc == "Variaveis" and line.split('#')[0].strip() != "Inicial":
+            key = line.split('[')[1].split(']')[0].strip()
+            ruuru[key] = Rule(key, *[])
+        elif proc == "Inicial" and line.split('#')[0].strip() != "Regras":
             # Reads the initial for the parsing start
             initial_D = line.split("#")[0].strip().strip(" ]").strip("[ ")
             proc = ""
         elif proc == "Regras":
             # Build rules and productions following stuff from l.19x
-            pass
-        elif len(line.split("#")[0].strip().split()) == 1:
-            # See if in area of interest to read stuff aka Regras ou inicial
-            proc = line.split("#")[0].strip()
+            key = line.split('>')[0].strip().strip('[').strip(']').strip()
+            ruuru[key].productions.append(Production(*[x.strip().strip('[').strip(']').strip() if key in terms else
+                                    ruuru[x.strip().strip('[').strip(']').strip()] for x in
+                                    line.split('>')[1].split('#')[0].split(';')[0].split('] [')]))
+        else:
+            proc = line.split('#')[0].strip()
+
+    return initial_D, ruuru, terms
 
 class Production(object):
     def __init__(self, *terms):
@@ -211,7 +223,8 @@ for tree in build_trees(parse(S, "book the flight through houston")):
     tree.print_()
 """
 if __name__ == "__main__":
-    init, ruurus = read_file(input("File to be read: "))
+    print(read_file(input("File to be read")))
+    #init, ruurus, terms = read_file(input("File to be read: "))
     """ Kinda the structure we need
     if init and ruurus:
         to_parse = input("String to parse: ")
