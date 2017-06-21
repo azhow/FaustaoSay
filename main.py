@@ -1,6 +1,6 @@
 import sys
 
-def fun(line, key, terms, ruuru):
+def fun(line):
     '''lis = []
     if key in terms:
         for x in line.split('>')[1].split('#')[0].split(';')[0].split('] ['):
@@ -10,10 +10,13 @@ def fun(line, key, terms, ruuru):
         ruuru[key] = line.strip().strip('[ ').strip(' ]')
         return lis'''
     #aux = [x for x in line.split('>')[1].split('#')[0].split(';')[0].strip().strip('[ ').strip(' ]').split(' ] [ ')]
-    lis = [x if x in terms else
-        ruuru[x] for x in
-        line.split('>')[1].split('#')[0].split(';')[0].strip().strip('[ ').strip(' ]').split(' ] [ ')]
+    lis = [x for x in line.split('>')[1].split('#')[0].split(';')[0].strip().strip('[ ').strip(' ]').split(' ] [ ')]
     return lis
+
+def get_bitches(ruuru, initial_D):
+    ruuru['__root__'] = ruuru[initial_D]
+    print(ruuru['__root__'].productions)
+    ruuru['__root__'].productions = Production(ruuru[x] for x in ruuru['__root__'].productions)
 
 def read_file(file_path):
     """
@@ -26,27 +29,27 @@ def read_file(file_path):
     """
     proc = ""
     initial_D = ""
-    ruuru = {}
     terms = []
+    ruuru = {}
     for line in open(file_path, "rU"):
-        if proc == "Terminais" and line.split('#')[0].strip() != "Terminais" and \
-        line.split('#')[0].strip() != "Variaveis":
-            terms.append(line.split('[ ')[1].split(' ]')[0])
-        elif proc == "Variaveis" and line.split('#')[0].strip() != "Inicial":
-            key = line.split('[')[1].split(']')[0].strip()
-            ruuru[key] = Rule(key, *[])
-        elif proc == "Inicial" and line.split('#')[0].strip() != "Regras":
+        if proc == "Inicial":
             # Reads the initial for the parsing start
             initial_D = line.split("#")[0].strip().strip(" ]").strip("[ ")
             proc = ""
         elif proc == "Regras":
-            # Build rules and productions following stuff from l.19x
+            #print([x.strip('[ ').strip(' ]') for x in line.split('>')[1].strip('\n').split('] [')])
+            # Build rules and productions following stuff from l.19x not comment tolerant yet
             key = line.split('>')[0].strip().strip('[').strip(']').strip()
-            ruuru[key].productions.append(Production(*fun(line, key, terms, ruuru)))
+            if key not in ruuru:
+                ruuru[key] = Rule(key, Production([x.strip('[ ').strip(' ]') for x in line.split('>')[1].strip('\n').split('] [')]))
+            else:
+                ruuru[key].add(Production([x.strip('[ ').strip(' ]') for x in line.split('>')[1].strip('\n').split('] [')]))
         else:
             proc = line.split('#')[0].strip()
 
-    return initial_D, ruuru, terms
+    # Builds the all unique rules
+    initial_D = Rule(ruuru[initial_D].name, Production(get_bitches(ruuru, initial_D)))
+    return initial_D, ruuru
 
 class Production(object):
     def __init__(self, *terms):
@@ -238,8 +241,29 @@ for tree in build_trees(parse(S, "book the flight through houston")):
     print("--------------------------")
     tree.print_()
 """
+
+#DET = Rule("DET", Production("the"))
+#V = Rule("V", Production("bark"), Production("eat"), Production("run"))
+#N = Rule("N", Production("child"), Production("thing"))
+
+#NP = Rule("NP", Production(N), Production(DET, N))
+#VP = Rule("VP", Production(V), Production(V, NP))
+
+"""
+S = Rule("S", Production(Rule("NP", Production(Rule("N", Production("child"),
+    Production("thing"))),Production(Rule("DET", Production("the"))
+, Rule("N", Production("child"), Production("thing"))))
+, Rule("VP", Production(Rule("V", Production("bark"), Production("eat"), Production("run"))), Production(Rule("V", Production("bark"), Production("eat"), Production("run"))
+, Rule("NP", Production(Rule("N", Production("child"), Production("thing"))), Production(Rule("DET", Production("the"))
+, Rule("N", Production("child"), Production("thing"))))))))
+
+for tree in build_trees(parse(S, "the child bark")):
+    tree.print_()
+
+"""
 if __name__ == "__main__":
-    #print(read_file(input("File to be read: ")))
+    print(read_file(input("File to be read: ")))
+    """
     try:
         init, ruurus, terms = read_file(sys.argv[1])
     except IndexError:
@@ -254,4 +278,4 @@ if __name__ == "__main__":
             tree.print_()
         except ValueError:
             print('Frase não reconhecida como parte da linguagem')
-    
+    """

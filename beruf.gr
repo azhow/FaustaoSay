@@ -1,8 +1,25 @@
+Terminais
+[ child ]
+[ thing ]
+[ bark ]
+[ eat ]
+[ run ]
+[ the ]
+Variaveis
+[ S ]
+[ NP ]
+[ VP ]
+[ N ]
+[ V ]
+[ DET ]
+Inicial
+[ S ]
 Regras
 [ S ] > [ NP ] [ VP ]
 [ NP ] > [ DET ] [ N ]
 [ NP ] > [ N ]
 [ VP ] > [ V ]
 [ VP ] > [ V ] [ NP ]
-[ VP ] > [ V ] [ PP ]
-[ PP ] > [ P ] [ NP ]
+[ N ] > [ child ] [ thing ]
+[ V ] > [ bark ] [ eat ] [ run ]
+[ DET ] > [ the ]
