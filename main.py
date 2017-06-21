@@ -1,11 +1,19 @@
+import sys
+
 def fun(line, key, terms, ruuru):
-    lis = []
+    '''lis = []
     if key in terms:
         for x in line.split('>')[1].split('#')[0].split(';')[0].split('] ['):
             lis.append(x.strip().strip('[').strip(']').strip())
         return lis
     else:
         ruuru[key] = line.strip().strip('[ ').strip(' ]')
+        return lis'''
+    #aux = [x for x in line.split('>')[1].split('#')[0].split(';')[0].strip().strip('[ ').strip(' ]').split(' ] [ ')]
+    lis = [x if x in terms else
+        ruuru[x] for x in
+        line.split('>')[1].split('#')[0].split(';')[0].strip().strip('[ ').strip(' ]').split(' ] [ ')]
+    return lis
 
 def read_file(file_path):
     """
@@ -34,7 +42,7 @@ def read_file(file_path):
         elif proc == "Regras":
             # Build rules and productions following stuff from l.19x
             key = line.split('>')[0].strip().strip('[').strip(']').strip()
-            ruuru[key].productions.append(Production(*[fun(line, key, terms, ruuru)]))
+            ruuru[key].productions.append(Production(*fun(line, key, terms, ruuru)))
         else:
             proc = line.split('#')[0].strip()
 
@@ -182,7 +190,7 @@ def parse(rule, text):
         if st.name == GAMMA_RULE and st.completed():
             return st
     else:
-        raise ValueError("parsing failed")
+        raise ValueError("Frase não reconhecida")
 
 def build_trees(state):
     return build_trees_helper([], state, len(state.rules) - 1, state.end_column)
@@ -231,12 +239,19 @@ for tree in build_trees(parse(S, "book the flight through houston")):
     tree.print_()
 """
 if __name__ == "__main__":
-    print(read_file(input("File to be read: ")))
-    #init, ruurus, terms = read_file(input("File to be read: "))
-    """ Kinda the structure we need
+    #print(read_file(input("File to be read: ")))
+    try:
+        init, ruurus, terms = read_file(sys.argv[1])
+    except IndexError:
+        print('Use: ' + sys.argv[0] + ' grammar_file')
+        sys.exit(0)
+    # Kinda the structure we need
     if init and ruurus:
         to_parse = input("String to parse: ")
-        for tree in build_trees(parse(init, to_parse))
-        print("----------------------------------------------------")
-        tree.print_()
-    """
+        try:
+            for tree in build_trees(parse(init, to_parse)):
+                print("----------------------------------------------------")
+            tree.print_()
+        except ValueError:
+            print('Frase não reconhecida como parte da linguagem')
+    
