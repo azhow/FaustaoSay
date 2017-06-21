@@ -15,8 +15,15 @@ def fun(line):
 
 def get_bitches(ruuru, initial_D):
     ruuru['__root__'] = ruuru[initial_D]
-    print(ruuru['__root__'].productions)
-    ruuru['__root__'].productions = Production(ruuru[x] for x in ruuru['__root__'].productions)
+    """
+    for x in ruuru['__root__'].productions:
+        for y in x:
+            for w in y:
+                print(w)
+    """
+    prod = [ruuru[w] for x in ruuru['__root__'].productions for y in x for w in y]
+    ruuru['__root__'].productions = Production(prod)
+    del ruuru[initial_D]
 
 def read_file(file_path):
     """
