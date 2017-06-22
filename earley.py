@@ -7,7 +7,9 @@ class Rule:
         self.productions = list(productions)
         self.p = 0
         self.d = d
-        self.len = lambda : len(self.productions)
+        
+    def len(self):
+        return len(self.productions)
 
     def __str__(self):
         # pra alguma coisa racket tinha que ter servido
@@ -15,7 +17,7 @@ class Rule:
 
         rule = str(self.var) + ' -> '
         rule += f(self.productions[:self.p])
-        rule += '*'
+        rule += u"\u2022"
         rule += f(self.productions[self.p:])
         rule += '/' + str(self.d)
 
