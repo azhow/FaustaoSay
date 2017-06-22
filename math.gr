@@ -1,0 +1,18 @@
+Terminais
+[ + ]
+[ * ]
+[ x ]
+Variaveis
+[ P ]
+[ S ]
+[ M ]
+[ T ]
+Inicial
+[ P ]
+Regras
+[ P ] > [ S ]
+[ S ] > [ S ] [ + ] [ M ]
+[ S ] > [ M ]
+[ M ] > [ M ] [ * ] [ T ]
+[ M ] > [ T ]
+[ T ] > [ x ]

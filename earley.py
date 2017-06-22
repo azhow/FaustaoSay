@@ -107,7 +107,7 @@ def earley(initial,variables,terminals,rules,string,printParse=False):
             while toDo != []:
                 curRule = toDo[0]
                 if curRule.p >= curRule.len(): # complete
-                    aux = [copy(rule) for rule in D[i] if (rule.productions[rule.p] == curRule.var if rule.p < rule.len() else False)]
+                    aux = [copy(rule) for rule in D[curRule.d] if (rule.productions[rule.p] == curRule.var if rule.p < rule.len() else False)]
                     for rule in aux:
                         rule.p += 1
                         if rule not in D[i+1]:
@@ -136,7 +136,7 @@ def earley(initial,variables,terminals,rules,string,printParse=False):
     
     if not forceStop:
         for rule in D[-1]:
-            if rule.d == 0 and rule.p == rule.len():
+            if rule.var == initial and rule.p == rule.len():
                 recognized = True
                 
     return recognized
