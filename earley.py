@@ -136,7 +136,7 @@ def earley(initial,variables,terminals,rules,string,printParse=False):
     
     if not forceStop:
         for rule in D[-1]:
-            if rule.var == initial and rule.p == rule.len():
+            if rule.var == initial and rule.p == rule.len() and rule.d == 0:
                 recognized = True
                 
     return recognized
