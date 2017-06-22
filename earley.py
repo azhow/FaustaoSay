@@ -157,14 +157,13 @@ if __name__ == '__main__':
     try:
         initial,variables,terminals,rules = read_file(gramatica)
     except FileNotFoundError:
-        print('Arquivo de gramática não encontrado')
+        print('Arquivo ' + sys.argv[1] + ' não encontrado.')
         sys.exit(0)
     
-
-    string = input('Frase a ser reconhecida: ')
+    string = input('Frase a ser reconhecida (string vazia termina a execução): ')
     while string != '':
-        print('\n\'' + string + '\' faz parte da gramática\n' 
+        print('\n\'' + string + '\' faz parte da linguagem.\n' 
             if earley(initial,variables,terminals,rules,string,True) 
-            else '\nFrase não reconhecida\n')
+            else '\n\'' + string + '\' não reconhecida como parte da linguagem.\n')
         string = input('Frase a ser reconhecida: ')   
          
