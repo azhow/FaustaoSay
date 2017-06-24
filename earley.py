@@ -12,6 +12,7 @@ Changelog:
     v1.3 - Added import random and started making the function to generate random phrases of the
            grammar and used 'sys.argv[2]' to pass the what will the program do.
     v1.4 - Probably finished this work by completing 'generate_random' function (thank God).
+    v1.5 - Documented the 'generate_random' function.
 """
 import sys
 import random
@@ -189,20 +190,37 @@ def earley(initial, variables, rules, string, printParse=False):
 
 
 def generate_random(rules, initial, terminals):
+    """ Generates the random phrase.
+        In:
+            rules:Dictionary = Dictionary of the rules of the grammar.
+            initial:String = Initial symbol of the grammar.
+            terminals:List = List of terminal symbols of the grammar.
+        Out:
+            string:String = Random phrase.
+    """
     random_phrase = random.choice(rules[initial])
     stop = False
+    # Where stuff happens
     while not stop:
         for index, cur_rule in enumerate(random_phrase):
             temp = []
             if cur_rule not in terminals:
+                # Choose randomly 1 production
                 random_phrase[index] = random.choice(rules[cur_rule])
             for x in random_phrase:
+                # Just appends every terminal
                 temp.append(x)
+
+            # If it is a list, then we process it
             if isinstance(temp[index], list):
+                # Fancy way of flattening nested lists of 2 levels
                 temp.remove(random_phrase[index])
                 for k, x in enumerate(random_phrase[index]):
                     temp.insert(index+k, x)
+            # Sets random_phrase to be the new generated phrase
             random_phrase = temp
+
+            # Check if all we've got are terminals
             for x in random_phrase:
                 if x in terminals:
                     stop = True
@@ -210,8 +228,11 @@ def generate_random(rules, initial, terminals):
                     stop = False
                     break
 
+    # Now to pass to string, we need to declare one
     string = ''
+    # Here it is passed to the string (finally!)
     for w in random_phrase:
+        # Just appends every word to the end of the string
         if w != random_phrase[:-1]:
             string += w + ' '
 
