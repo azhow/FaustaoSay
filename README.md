@@ -5,5 +5,8 @@
 ## How to use:
 On the terminal, write this command:
 ```
-python3 earley.py grammar_file.gr
+python3 earley.py grammar_file.gr operation
 ```
+Where:
+    * grammar_file is a file defined as the example grammars;
+    * operation is either 'generate' or 'recognize';

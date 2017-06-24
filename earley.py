@@ -9,8 +9,11 @@ Changelog:
            'read_file' function and removed the 'terminals' input from the 'earley' function as it
            was not being used.
     v1.2 - Finished documenting.
+    v1.3 - Added import random and started making the function to generate random phrases of the
+           grammar and used 'sys.argv[2]' to pass the what will the program do.
 """
 import sys
+import random
 from copy import copy
 
 class Rule:
@@ -182,6 +185,10 @@ def earley(initial, variables, rules, string, printParse=False):
 
     return recognized
 
+def generate_random(rules, initial, terminals):
+    print(random.choice(RULES[INITIAL]))
+    pass
+
 if __name__ == '__main__':
     try:
         GRAMATICA = sys.argv[1]
@@ -195,9 +202,17 @@ if __name__ == '__main__':
         print('Arquivo ' + sys.argv[1] + ' não encontrado.')
         sys.exit(0)
 
-    STRING = input('Frase a ser reconhecida (string vazia termina a execução): ')
-    while STRING != '':
-        print('\n\'' + STRING + '\' faz parte da linguagem.\n'
-              if earley(INITIAL, VARIABLES, RULES, STRING, True)
-              else '\n\'' + STRING + '\' não reconhecida como parte da linguagem.\n')
-        STRING = input('Frase a ser reconhecida: ')
+    if sys.argv[2] == 'recognize':
+        STRING = input('Frase a ser reconhecida (string vazia termina a execução): ')
+        while STRING != '':
+            print('\n\'' + STRING + '\' faz parte da linguagem.\n'
+                  if earley(INITIAL, VARIABLES, RULES, STRING, True)
+                  else '\n\'' + STRING + '\' não reconhecida como parte da linguagem.\n')
+            STRING = input('Frase a ser reconhecida: ')
+
+    elif sys.argv[2] == 'generate':
+        generate_random(RULES, INITIAL, TERMINALS)
+
+    else:
+        raise Exception('Invalid argument operation type, operation is either "recognize" or' \
+                         + ' "generate".')
