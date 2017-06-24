@@ -11,6 +11,7 @@ Changelog:
     v1.2 - Finished documenting.
     v1.3 - Added import random and started making the function to generate random phrases of the
            grammar and used 'sys.argv[2]' to pass the what will the program do.
+    v1.4 - Probably finished this work by completing 'generate_random' function (thank God).
 """
 import sys
 import random
@@ -101,6 +102,7 @@ def read_file(file_path):
 
     return initial_D, variables, terminals, rules
 
+
 def earley(initial, variables, rules, string, printParse=False):
     """
     Implementation of the Earley parser.
@@ -147,7 +149,7 @@ def earley(initial, variables, rules, string, printParse=False):
 
             while toDo != []:
                 curRule = toDo[0]
-                if curRule.p >= curRule.len(): # complete
+                if curRule.p >= curRule.len():  # complete
                     aux = [copy(rule) for rule in D[curRule.d]
                            if (rule.productions[rule.p] == curRule.var
                                if rule.p < rule.len() else False)]
@@ -159,7 +161,7 @@ def earley(initial, variables, rules, string, printParse=False):
                         if rule not in toDo:
                             toDo.append(rule)
 
-                elif curRule.productions[curRule.p] in variables: # predict
+                elif curRule.productions[curRule.p] in variables:  # predict
                     curVar = curRule.productions[curRule.p]
                     aux = [Rule(curVar, i+1, *productions) for productions in rules[curVar]]
                     D[i+1].extend(aux)
@@ -185,9 +187,36 @@ def earley(initial, variables, rules, string, printParse=False):
 
     return recognized
 
+
 def generate_random(rules, initial, terminals):
-    print(random.choice(RULES[INITIAL]))
-    pass
+    random_phrase = random.choice(rules[initial])
+    stop = False
+    while not stop:
+        for index, cur_rule in enumerate(random_phrase):
+            temp = []
+            if cur_rule not in terminals:
+                random_phrase[index] = random.choice(rules[cur_rule])
+            for x in random_phrase:
+                temp.append(x)
+            if isinstance(temp[index], list):
+                temp.remove(random_phrase[index])
+                for k, x in enumerate(random_phrase[index]):
+                    temp.insert(index+k, x)
+            random_phrase = temp
+            for x in random_phrase:
+                if x in terminals:
+                    stop = True
+                else:
+                    stop = False
+                    break
+
+    string = ''
+    for w in random_phrase:
+        if w != random_phrase[:-1]:
+            string += w + ' '
+
+    return string
+
 
 if __name__ == '__main__':
     try:
@@ -211,8 +240,8 @@ if __name__ == '__main__':
             STRING = input('Frase a ser reconhecida: ')
 
     elif sys.argv[2] == 'generate':
-        generate_random(RULES, INITIAL, TERMINALS)
+        print(generate_random(RULES, INITIAL, TERMINALS))
 
     else:
-        raise Exception('Invalid argument operation type, operation is either "recognize" or' \
-                         + ' "generate".')
+        raise Exception('Invalid argument operation type, operation is either "recognize" or'
+                        + ' "generate".')
