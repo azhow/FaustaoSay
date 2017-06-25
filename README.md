@@ -1,13 +1,39 @@
 # Final work for the Linguagens Formais e Automatos course from the Universidade Federal do Rio Grande do Sul.
 
-# Made for Linux (~~but you can use on other systems, but that won't be covered in this guide~~). :raised_hands: :joy: :ok_hand:
-
 ## How to use:
-On the terminal, write this command:
+				
+### parser.py				
 ```
-python3 earley.py grammar_file.gr operation
+usage: parser.py [-h] [-v] grammar
+
+Sentence parser: returns if given sentences are part of the language described
+in given grammar file.
+
+positional arguments:
+  grammar        path to file containing the grammar to be used
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  print parsing steps
 ```
-Where:
-    
-    * grammar_file is a file defined as the example grammars;
-    * operation is either 'generate' or 'recognize';
+
+### generator.py
+```
+usage: generator.py [-h] [-v] [-f path] grammar
+
+Sentence generator: generates a sentence from the language described in given
+grammar file.
+
+positional arguments:
+  grammar        path to file containing the grammar to be used
+
+optional arguments:
+  -h, --help     show this help message and exit
+  -v, --verbose  print parsing steps
+  -f path        path to directory containing .wav files named accordingly
+                 with the terminal they represent
+```
+
+The script `generator.py` depends on the module `pyglet` to play audios. 
+To install use `pip install pyglet`. You can still run the script without 
+this module, but no audios will be played.

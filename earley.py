@@ -132,9 +132,11 @@ def earley(initial, variables, rules, string, printParse=False):
         toDo.pop(0)
 
     if printParse:
+        print('==============================')
         print('S(0):')
         for x in D[0]:
             print(x)
+        print('==============================')
 
     forceStop = False
     # faz o resto
@@ -175,9 +177,10 @@ def earley(initial, variables, rules, string, printParse=False):
             break
 
         if printParse:
-            print('\nS(' + str(i+1) + '):')
+            print('S(' + str(i+1) + '):')
             for x in D[i+1]:
                 print(x)
+            print('==============================')
 
     recognized = False
 
@@ -189,7 +192,7 @@ def earley(initial, variables, rules, string, printParse=False):
     return recognized
 
 
-def generate_random(rules, initial, terminals):
+def generate_random(initial, variables, terminals, rules, printParse=False):
     """ Generates the random phrase.
         In:
             rules:Dictionary = Dictionary of the rules of the grammar.
@@ -198,71 +201,94 @@ def generate_random(rules, initial, terminals):
         Out:
             string:String = Random phrase.
     """
-    random_phrase = random.choice(rules[initial])
-    stop = False
-    # Where stuff happens
-    while not stop:
-        for index, cur_rule in enumerate(random_phrase):
-            temp = []
-            if cur_rule not in terminals:
-                # Choose randomly 1 production
-                random_phrase[index] = random.choice(rules[cur_rule])
-            for x in random_phrase:
-                # Just appends every terminal
-                temp.append(x)
+    
+    D = [[]]
+    toDo = [initial]
 
-            # If it is a list, then we process it
-            if isinstance(temp[index], list):
-                # Fancy way of flattening nested lists of 2 levels
-                temp.remove(random_phrase[index])
-                for k, x in enumerate(random_phrase[index]):
-                    temp.insert(index+k, x)
-            # Sets random_phrase to be the new generated phrase
-            random_phrase = temp
+    # cria D0
+    while toDo != []:
+        curVar = toDo[0]
+        for productions in rules[curVar]:
+            D[0].append(Rule(curVar, 0, *productions))
 
-            # Check if all we've got are terminals
-            for x in random_phrase:
-                if x in terminals:
-                    stop = True
-                else:
-                    stop = False
-                    break
+            firstProduction = D[0][-1].productions[0]
+            if firstProduction in variables and firstProduction not in toDo:
+                toDo.append(firstProduction)
+        toDo.pop(0)
 
-    # Now to pass to string, we need to declare one
+    if printParse:
+        print('==============================')
+        print('S(0):')
+        for x in D[0]:
+            print(x)
+        print('==============================')
+
+            
     string = ''
-    # Here it is passed to the string (finally!)
-    for w in random_phrase:
-        # Just appends every word to the end of the string
-        if w != random_phrase[:-1]:
-            string += w + ' '
+    i = 0
+    recognized = False
+    word = ''
+    while not recognized:
+    
+        # choose a random terminal amongst current possible productions
+        availableTerms = [x.productions[x.p] for x in D[i] if (x.productions[x.p] in terminals
+                                                if x.p < x.len() else False)]
+                                                
+        # if there's no terminal to choose from, nothing can be generated
+        # abort program
+        try:
+            word = random.choice(list(set(availableTerms)))
+        except IndexError:
+            raise Exception('Erro: Não foi possível gerar uma sentença válida.')
+    
+        string += word + ' '
+    
+        scan = [copy(rule) for rule in D[i] if (rule.productions[rule.p] == word
+                                                if rule.p < rule.len() else False)]
+        for rule in scan:
+            rule.p += 1
+            
+        D.append([])
+        D[-1].extend(scan)
+        
+        toDo = scan
 
+        while toDo != []:
+            curRule = toDo[0]
+            if curRule.p >= curRule.len():  # complete
+                aux = [copy(rule) for rule in D[curRule.d]
+                       if (rule.productions[rule.p] == curRule.var
+                           if rule.p < rule.len() else False)]
+
+                for rule in aux:
+                    rule.p += 1
+                    if rule not in D[i+1]:
+                        D[i+1].append(rule)
+                    if rule not in toDo:
+                        toDo.append(rule)
+
+            elif curRule.productions[curRule.p] in variables:  # predict
+                curVar = curRule.productions[curRule.p]
+                aux = [Rule(curVar, i+1, *productions) for productions in rules[curVar]]
+                D[i+1].extend(aux)
+                toDo.extend(aux)
+
+            toDo.pop(0)
+
+        if printParse:
+            print('S(' + str(i+1) + '):')
+            print('Terminal escolhido: \'' + word + '\'')
+            for x in D[i+1]:
+                print(x)
+            print('==============================')
+                
+        i += 1
+
+        for rule in D[-1]:
+            if rule.var == initial and rule.p == rule.len() and rule.d == 0:
+                availableTerms = [x.productions[x.p] for x in D[i] if (x.productions[x.p] in terminals
+                                  if x.p < x.len() else False)]
+                recognized = random.choice([True, False]) if len(list(set(availableTerms))) > 0 else True
+
+    string.strip()
     return string
-
-
-if __name__ == '__main__':
-    try:
-        GRAMATICA = sys.argv[1]
-    except IndexError:
-        print('Uso: ' + sys.argv[0] + ' gramatica')
-        sys.exit(0)
-
-    try:
-        INITIAL, VARIABLES, TERMINALS, RULES = read_file(GRAMATICA)
-    except FileNotFoundError:
-        print('Arquivo ' + sys.argv[1] + ' não encontrado.')
-        sys.exit(0)
-
-    if sys.argv[2] == 'recognize':
-        STRING = input('Frase a ser reconhecida (string vazia termina a execução): ')
-        while STRING != '':
-            print('\n\'' + STRING + '\' faz parte da linguagem.\n'
-                  if earley(INITIAL, VARIABLES, RULES, STRING, True)
-                  else '\n\'' + STRING + '\' não reconhecida como parte da linguagem.\n')
-            STRING = input('Frase a ser reconhecida: ')
-
-    elif sys.argv[2] == 'generate':
-        print(generate_random(RULES, INITIAL, TERMINALS))
-
-    else:
-        raise Exception('Invalid argument operation type, operation is either "recognize" or'
-                        + ' "generate".')
