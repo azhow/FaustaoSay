@@ -34,6 +34,6 @@ optional arguments:
                  with the terminal they represent
 ```
 
-The script `generator.py` depends on the module `pyglet` to play audios. 
-To install use `pip install pyglet`. You can still run the script without 
+The script `generator.py` depends on the module `pyaudio` to play audios. 
+To install use `pip install pyaudio`. You can still run the script without 
 this module, but no audios will be played.

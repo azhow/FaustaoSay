@@ -2,10 +2,11 @@ import sys
 import argparse
 import os.path
 import earley
+import wave
 
 hasAudio = True
 try:
-    import pyglet
+    import pyaudio
 except ModuleNotFoundError:
     hasAudio = False
     
@@ -46,14 +47,23 @@ if __name__ == '__main__':
     
     if playAudio and hasAudio:
         audioDir = os.path.abspath(args.f)
-        audios = {}
-        player = pyglet.media.Player()
-        
+        p = pyaudio.PyAudio()
         for word in frase.split():
-            if os.path.isfile(audioDir + '/' + word + '.wav'):
-                player.queue(audioDir + '/' + word + '.wav')
+            audioPath = audioDir + '/' + word + '.wav'
+            if os.path.isfile(audioPath):
+                audioFile = wave.open(audioPath,"rb")
+                chunk = 1024
+                stream = p.open(format=p.get_format_from_width(audioFile.getsampwidth()),  
+                                channels=audioFile.getnchannels(),  
+                                rate=audioFile.getframerate(),  
+                                output=True)
+                data = audioFile.readframes(chunk)
+                while data:  
+                    stream.write(data)  
+                    data = audioFile.readframes(chunk)
+                stream.stop_stream()  
+                stream.close()
             else:
                 print(parser.prog + ': error: missing audio file for terminal ' + word + '.')
                 sys.exit(-3)
-        
-        player.play()
+        p.terminate() 
