@@ -7,7 +7,7 @@ import wave
 hasAudio = True
 try:
     import pyaudio
-except ModuleNotFoundError:
+except ImportError:
     hasAudio = False
     
 if __name__ == '__main__':
