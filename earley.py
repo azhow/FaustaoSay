@@ -133,7 +133,7 @@ def earley(initial, variables, rules, string, printParse=False):
 
     if printParse:
         print('==============================')
-        print('S(0):')
+        print('D(0):')
         for x in D[0]:
             print(x)
         print('==============================')
@@ -177,7 +177,7 @@ def earley(initial, variables, rules, string, printParse=False):
             break
 
         if printParse:
-            print('S(' + str(i+1) + '):')
+            print('D(' + str(i+1) + '):')
             for x in D[i+1]:
                 print(x)
             print('==============================')
@@ -218,7 +218,7 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
 
     if printParse:
         print('==============================')
-        print('S(0):')
+        print('D(0):')
         for x in D[0]:
             print(x)
         print('==============================')
@@ -276,7 +276,7 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
             toDo.pop(0)
 
         if printParse:
-            print('S(' + str(i+1) + '):')
+            print('D(' + str(i+1) + '):')
             print('Terminal escolhido: \'' + word + '\'')
             for x in D[i+1]:
                 print(x)
