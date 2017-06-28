@@ -71,4 +71,4 @@ if __name__ == '__main__':
                 data = audioFile.readframes(chunk)
             stream.stop_stream()  
             stream.close()
-p.terminate() 
+        p.terminate() 
