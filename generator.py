@@ -67,6 +67,6 @@ if __name__ == '__main__':
                 data = audioFile.readframes(chunk)
             stream.stop_stream()
             stream.close()
-            time.sleep(0.1)
+            #time.sleep(0.1)
 
         p.terminate()
