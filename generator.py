@@ -4,14 +4,10 @@ import sys
 import argparse
 import os.path
 import earley
-import wave
 import time
+import subprocess
 
 hasAudio = True
-try:
-    import pyaudio
-except ImportError:
-    hasAudio = False
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Sentence generator: \
@@ -45,28 +41,14 @@ if __name__ == '__main__':
 
     if playAudio and hasAudio:
         audioDir = os.path.abspath(args.f)
-        p = pyaudio.PyAudio()
         audioFiles = []
         for word in frase.split():
             audioPath = audioDir + '/' + word + '.wav'
             if os.path.isfile(audioPath):
-                audioFiles.append(wave.open(audioPath,"rb"))
+                audioFiles.append(audioDir +  '/' + word + '.wav')
             else:
                 print(parser.prog + ': error: missing audio file for terminal ' + word + '.')
                 sys.exit(-3)
 
         for audioFile in audioFiles:
-            chunk = 1024
-            stream = p.open(format=p.get_format_from_width(audioFile.getsampwidth()),
-                            channels=audioFile.getnchannels(),
-                            rate=audioFile.getframerate(),
-                            output=True)
-            data = audioFile.readframes(chunk)
-            while data:
-                stream.write(data)
-                data = audioFile.readframes(chunk)
-            stream.stop_stream()
-            stream.close()
-            #time.sleep(0.1)
-
-        p.terminate()
+            subprocess.call("aplay -q " + audioFile, shell=True)
