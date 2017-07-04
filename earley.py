@@ -46,7 +46,7 @@ class Rule:
         # pra alguma coisa racket tinha que ter servido
         f = lambda x: '' if x == [] else x[0] + ' ' + f(x[1:])
 
-        rule = str(self.var) + ' -> '
+        rule = str(self.var) + ' ' + u'\u2192' + '  '
         rule += f(self.productions[:self.p])
         rule += u"\u2022"
         rule += f(self.productions[self.p:])
