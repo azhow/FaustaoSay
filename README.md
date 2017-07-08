@@ -37,3 +37,8 @@ optional arguments:
 The script `generator.py` depends on the module `pyaudio` to play audios. 
 To install use `pip install pyaudio`. You can still run the script without 
 this module, but no audios will be played.
+
+## How to faustosay
+```
+./generator.py -f ./audios/fausto/ ./grammars/fausto.gr | ./faustosay.py 
+```
