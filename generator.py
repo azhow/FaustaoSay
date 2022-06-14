@@ -7,6 +7,8 @@ import earley
 import time
 import subprocess
 
+from playsound import playsound
+
 hasAudio = True
 
 if __name__ == '__main__':
@@ -51,4 +53,4 @@ if __name__ == '__main__':
                 sys.exit(-3)
 
         for audioFile in audioFiles:
-            subprocess.call("aplay -q " + audioFile, shell=True)
+            playsound(audiofile)
