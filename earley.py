@@ -18,10 +18,12 @@ import sys
 import random
 from copy import copy
 
+
 class Rule:
     """
     Rule class which controls the parser's state and attributes.
     """
+
     def __init__(self, var, d, *productions):
         """
         Class constructor.
@@ -44,7 +46,7 @@ class Rule:
 
     def __str__(self):
         # pra alguma coisa racket tinha que ter servido
-        f = lambda x: '' if x == [] else x[0] + ' ' + f(x[1:])
+        def f(x): return '' if x == [] else x[0] + ' ' + f(x[1:])
 
         rule = str(self.var) + ' ' + u'\u2192' + '  '
         rule += f(self.productions[:self.p])
@@ -82,7 +84,7 @@ def read_file(file_path):
 
     for line in open(file_path, "rU"):
         if proc == "Terminais" and line.split('#')[0].strip() != "Terminais" and \
-                                   line.split('#')[0].strip() != "Variaveis":
+                line.split('#')[0].strip() != "Variaveis":
             terminals.append(line.split('[ ')[1].split(' ]')[0])
         elif proc == "Variaveis" and line.split('#')[0].strip() != "Inicial":
             key = line.split('[')[1].split(']')[0].strip()
@@ -95,9 +97,9 @@ def read_file(file_path):
         elif proc == "Regras":
             # Build rules and productions following stuff from l.19x
             key = line.split('>')[0].strip().strip('[').strip(']').strip()
-            rules[key].append([x for x in \
-                line.split('>')[1].split('#')[0].split(';')[0] \
-                .strip().strip('[ ').strip(' ]').split(' ] [ ')])
+            rules[key].append([x for x in
+                               line.split('>')[1].split('#')[0].split(';')[0]
+                               .strip().strip('[ ').strip(' ]').split(' ] [ ')])
         else:
             proc = line.split('#')[0].strip()
 
@@ -166,7 +168,8 @@ def earley(initial, variables, rules, string, printParse=False):
 
                 elif curRule.productions[curRule.p] in variables:  # predict
                     curVar = curRule.productions[curRule.p]
-                    aux = [Rule(curVar, i+1, *productions) for productions in rules[curVar]]
+                    aux = [Rule(curVar, i+1, *productions)
+                           for productions in rules[curVar]]
                     D[i+1].extend(aux)
                     toDo.extend(aux)
 
@@ -201,7 +204,7 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
         Out:
             string:String = Random phrase.
     """
-    
+
     D = [[]]
     toDo = [initial]
 
@@ -223,34 +226,34 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
             print(x)
         print('==============================')
 
-            
     string = ''
     i = 0
     recognized = False
     word = ''
     while not recognized:
-    
+
         # choose a random terminal amongst current possible productions
         availableTerms = [x.productions[x.p] for x in D[i] if (x.productions[x.p] in terminals
-                                                if x.p < x.len() else False)]
-                                                
+                                                               if x.p < x.len() else False)]
+
         # if there's no terminal to choose from, nothing can be generated
         # abort program
         try:
             word = random.choice(list(set(availableTerms)))
         except IndexError:
-            raise Exception('Erro: Não foi possível gerar uma sentença válida.')
-    
+            raise Exception(
+                'Erro: Não foi possível gerar uma sentença válida.')
+
         string += word + ' '
-    
+
         scan = [copy(rule) for rule in D[i] if (rule.productions[rule.p] == word
                                                 if rule.p < rule.len() else False)]
         for rule in scan:
             rule.p += 1
-            
+
         D.append([])
         D[-1].extend(scan)
-        
+
         toDo = scan
 
         while toDo != []:
@@ -269,7 +272,8 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
 
             elif curRule.productions[curRule.p] in variables:  # predict
                 curVar = curRule.productions[curRule.p]
-                aux = [Rule(curVar, i+1, *productions) for productions in rules[curVar]]
+                aux = [Rule(curVar, i+1, *productions)
+                       for productions in rules[curVar]]
                 D[i+1].extend(aux)
                 toDo.extend(aux)
 
@@ -281,14 +285,15 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
             for x in D[i+1]:
                 print(x)
             print('==============================')
-                
+
         i += 1
 
         for rule in D[-1]:
             if rule.var == initial and rule.p == rule.len() and rule.d == 0:
                 availableTerms = [x.productions[x.p] for x in D[i] if (x.productions[x.p] in terminals
                                   if x.p < x.len() else False)]
-                recognized = random.choice([True, False]) if len(list(set(availableTerms))) > 0 else True
+                recognized = random.choice([True, False]) if len(
+                    list(set(availableTerms))) > 0 else True
 
     string.strip()
     return string

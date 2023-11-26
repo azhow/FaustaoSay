@@ -19,7 +19,7 @@ optional arguments:
 
 ### generator.py
 ```
-usage: generator.py [-h] [-v] [-f path] grammar
+usage: generator.py [-h] [-f path] grammar
 
 Sentence generator: generates a sentence from the language described in given
 grammar file.
@@ -29,7 +29,6 @@ positional arguments:
 
 optional arguments:
   -h, --help     show this help message and exit
-  -v, --verbose  print parsing steps
   -f path        path to directory containing .wav files named accordingly
                  with the terminal they represent
 ```
@@ -40,5 +39,5 @@ this module, but no audios will be played.
 
 ## How to faustosay
 ```
-./generator.py -f ./audios/fausto/ ./grammars/fausto.gr | ./faustosay.py 
+./generator.py -f ./audios/fausto/ ./grammars/fausto.gr | ./faustaosay.py 
 ```
