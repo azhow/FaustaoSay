@@ -8,28 +8,32 @@ def generate_message_balloon(input_string, max_string_length):
 
     # Handle single line strings
     if len(input_string) <= max_string_length:
-        bal += '< ' + input_string.ljust(max_string_length) + ' >' + '\n'
+        input_string = input_string.strip()
+        input_string += "."
+        bal += ' < ' + input_string.ljust(max_string_length - 1) + ' >' + '\n'
     # Handle multi line input
     else:
-        i = 0
-        while True:
-            start_idx = i * max_string_length
-            end_idx = (i * max_string_length) + max_string_length
-            line = input_string[start_idx:end_idx]
+        lines = [input_string[start_idx:start_idx + max_string_length]
+                 for start_idx in range(0, len(input_string), max_string_length)]
+
+        for line in lines:
+            wrapper = ''
+            if line == lines[0]:
+                wrapper += '/  \\' + '\n'
+            elif len(line) < max_string_length:
+                wrapper += '\\  /' + '\n'
+                line = line.strip()
+                line += '.'
+            else:
+                wrapper += '|  |' + '\n'
+
             message_part = line.ljust(max_string_length)
             if message_part[max_string_length - 1] not in [' ', ',']:
                 message_part += '-'
             else:
                 message_part += ' '
 
-            if i == 0:
-                bal += '/ ' + message_part + ' \\' + '\n'
-            elif len(line) < max_string_length:
-                bal += '\\ ' + message_part + ' /' + '\n'
-                break
-            else:
-                bal += '| ' + message_part + ' |' + '\n'
-            i += 1
+            bal += wrapper[:2] + message_part + wrapper[2:]
 
     bal += '  ' + '-' * (max_string_length + 1) + '\n'
     bal += ' ' * 9 + '\\' + '\n'
