@@ -78,7 +78,7 @@ def main(grammar_file, audio_dir=""):
 
 if __name__ == '__main__':
     grammar_file = os.path.dirname(__file__) + '/grammars/fausto.gr'
-    audio_dir = os.path.dirname(__file__) + '/audios/fausto/'
+    audio_dir = ''
 
     if len(sys.argv) != 1:
         parser = argparse.ArgumentParser(
