@@ -2,26 +2,39 @@
 import sys
 
 
-def balao(s, l):
+def generate_message_balloon(input_string, max_string_length):
     bal = ''
-    bal += '  ' + '_'*l + '\n'
-    if len(s) <= l:
-        bal += '< ' + s.ljust(l) + ' >' + '\n'
+    bal += '  ' + '_' * (max_string_length + 1) + '\n'
+
+    # Handle single line strings
+    if len(input_string) <= max_string_length:
+        bal += '< ' + input_string.ljust(max_string_length) + ' >' + '\n'
+    # Handle multi line input
     else:
         i = 0
         while True:
-            line = s[i*l:(i*l)+l]
+            start_idx = i * max_string_length
+            end_idx = (i * max_string_length) + max_string_length
+            line = input_string[start_idx:end_idx]
+            message_part = line.ljust(max_string_length)
+            if message_part[max_string_length - 1] not in [' ', ',']:
+                message_part += '-'
+            else:
+                message_part += ' '
+
             if i == 0:
-                bal += '/ ' + line.ljust(l) + ' \\' + '\n'
-            elif len(line) < l:
-                bal += '\\ ' + line.ljust(l) + ' /' + '\n'
+                bal += '/ ' + message_part + ' \\' + '\n'
+            elif len(line) < max_string_length:
+                bal += '\\ ' + message_part + ' /' + '\n'
                 break
             else:
-                bal += '| ' + line.ljust(l) + ' |' + '\n'
+                bal += '| ' + message_part + ' |' + '\n'
             i += 1
-    bal += '  ' + '-'*l + '\n'
-    bal += ' '*9 + '\\' + '\n'
-    bal += ' '*10 + '\\'
+
+    bal += '  ' + '-' * (max_string_length + 1) + '\n'
+    bal += ' ' * 9 + '\\' + '\n'
+    bal += ' ' * 10 + '\\'
+
     return bal
 
 
@@ -66,9 +79,9 @@ def faustao():
 
 
 if __name__ == '__main__':
-    s = ''
+    stdin_input = ''
     for line in sys.stdin:
-        s += line
+        stdin_input += line
 
-    print(balao(s.strip('\n'), 30))
+    print(generate_message_balloon(stdin_input.strip('\n'), 30))
     print(faustao())
