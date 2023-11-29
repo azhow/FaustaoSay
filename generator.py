@@ -77,25 +77,24 @@ def main(grammar_file, audio_dir=""):
 
 
 if __name__ == '__main__':
-    grammar_file = os.path.dirname(__file__) + '/grammars/fausto.gr'
-    audio_dir = ''
+    #grammar_file = os.path.dirname(__file__) + '/grammars/fausto.gr'
+    #audio_dir = ''
 
-    if len(sys.argv) != 1:
-        parser = argparse.ArgumentParser(
-            description='Sentence generator: \
-                         generates a sentence from the language \
-                         described in given grammar file.')
-        parser.add_argument(
-            'grammar', help='path to file containing the grammar to be used')
-        parser.add_argument(
-            '-f', metavar='path',
-            help='path to directory containing \
-                  .wav files named accordingly \
-                  with the terminal they represent')
+    parser = argparse.ArgumentParser(
+        description='Sentence generator: \
+                     generates a sentence from the language \
+                     described in given grammar file.')
+    parser.add_argument(
+        '-g', metavar='path', default=os.path.dirname(__file__) + '/grammars/fausto.gr', help='path to file containing the grammar to be used')
+    parser.add_argument(
+        '-f', metavar='path', default='',
+        help='path to directory containing \
+              .wav files named accordingly \
+              with the terminal they represent')
 
-        args = parser.parse_args()
-        grammar_file = args.grammar
-        audio_dir = args.f
+    args = parser.parse_args()
+    grammar_file = args.g
+    audio_dir = args.f
 
     ret_code = main(grammar_file, audio_dir)
     sys.exit(ret_code)

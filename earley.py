@@ -13,8 +13,8 @@ Changelog:
            grammar and used 'sys.argv[2]' to pass the what will the program do.
     v1.4 - Probably finished this work by completing 'generate_random' function (thank God).
     v1.5 - Documented the 'generate_random' function.
+    v1.6 - LTS maintenance version.
 """
-import sys
 import random
 from copy import copy
 
@@ -204,6 +204,7 @@ def generate_random(initial, variables, terminals, rules, printParse=False):
         Out:
             string:String = Random phrase.
     """
+    random.seed()
 
     D = [[]]
     toDo = [initial]

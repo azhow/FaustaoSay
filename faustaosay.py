@@ -4,38 +4,41 @@ import sys
 
 def generate_message_balloon(input_string, max_string_length):
     bal = ''
-    bal += '  ' + '_' * (max_string_length + 1) + '\n'
+    bal += ' ' + '_' * (max_string_length + 3) + '\n'
 
-    # Handle single line strings
-    if len(input_string) <= max_string_length:
-        input_string = input_string.strip()
-        input_string += "."
-        bal += ' < ' + input_string.ljust(max_string_length - 1) + ' >' + '\n'
-    # Handle multi line input
-    else:
-        lines = [input_string[start_idx:start_idx + max_string_length]
-                 for start_idx in range(0, len(input_string), max_string_length)]
+    lines = [input_string[start_idx:start_idx + max_string_length]
+             for start_idx in range(0, len(input_string), max_string_length)]
+    lines = [line for line in lines if line.strip() != ""]
 
-        for line in lines:
-            wrapper = ''
-            if line == lines[0]:
-                wrapper += '/  \\' + '\n'
-            elif len(line) < max_string_length:
-                wrapper += '\\  /' + '\n'
-                line = line.strip()
-                line += '.'
+    for line_idx, line in enumerate(lines):
+        # Generate line wrapper
+        wrapper = ''
+        if len(lines) == 1:
+            wrapper += '<   >' + '\n'
+        else:
+            if line_idx == 0:
+                wrapper += '/   \\' + '\n'
+            elif line_idx == len(lines) - 1:
+                wrapper += '\\   /' + '\n'
             else:
-                wrapper += '|  |' + '\n'
+                wrapper += '|   |' + '\n'
 
+        # Generate line ending
+        line = line.strip()
+        message_part = line.ljust(max_string_length)
+        if line_idx == len(lines) - 1:
+            line += '.'
             message_part = line.ljust(max_string_length)
-            if message_part[max_string_length - 1] not in [' ', ',']:
+        elif message_part[max_string_length - 1] not in [' ', ',']:
+            if line_idx < (len(lines) - 1) and lines[line_idx + 1][0] != ' ':
                 message_part += '-'
-            else:
-                message_part += ' '
+                wrapper = wrapper[:2] + wrapper[3:]
+        else:
+            message_part += ' '
 
-            bal += wrapper[:2] + message_part + wrapper[2:]
+        bal += wrapper[:2] + message_part + wrapper[2:]
 
-    bal += '  ' + '-' * (max_string_length + 1) + '\n'
+    bal += ' ' + '-' * (max_string_length + 3) + '\n'
     bal += ' ' * 9 + '\\' + '\n'
     bal += ' ' * 10 + '\\'
 
