@@ -24,7 +24,7 @@ def handle_audio(sentence, audio_dir):
     for word in sentence.split():
         audio_file_path = audio_dir + '/' + word + '.wav'
         if not os.path.isfile(audio_file_path):
-            print(parser.prog + ': error: missing audio file for terminal ' + word + '.')
+            print('Error: missing audio file for terminal ' + word + '.')
             return False
 
         audio_files.append(audio_file_path)
@@ -35,15 +35,33 @@ def handle_audio(sentence, audio_dir):
     return True
 
 
+def format_sentence(sentence):
+    # Remove whitespace before comma and uses UpperCase for initial letter
+    formatted_sentence = sentence
+
+    formatted_sentence = sentence[0].upper() + sentence[1:]
+    sentence.split(sep=',')
+
+    comma_pos = sentence.find(',', 0)
+    while comma_pos != -1:
+        if comma_pos != 0:
+            sentence = sentence[:comma_pos - 1] + sentence[comma_pos:]
+            formatted_sentence = formatted_sentence[:comma_pos - 1] + \
+                formatted_sentence[comma_pos:]
+
+        comma_pos = sentence.find(',', comma_pos)
+
+    return formatted_sentence
+
+
 def main(grammar_file, audio_dir=""):
     if not os.path.isfile(grammar_file):
         print('Error: file ' + grammar_file + ' not found.')
         return -1
 
     if len(audio_dir) != 0 and not os.path.isdir(audio_dir):
-        print(parser.prog + ': error: directory ' + audio_dir + ' not found.')
+        print('Error: directory ' + audio_dir + ' not found.')
         return -2
-
     initial, variables, terminals, rules = earley.read_file(grammar_file)
 
     sentence = earley.generate_random(
@@ -53,14 +71,14 @@ def main(grammar_file, audio_dir=""):
         if not handle_audio(sentence, audio_dir):
             return -3
 
-    print(sentence)
+    print(format_sentence(sentence))
 
     return 0
 
 
 if __name__ == '__main__':
     grammar_file = os.path.dirname(__file__) + '/grammars/fausto.gr'
-    audio_dir = ""
+    audio_dir = os.path.dirname(__file__) + '/audios/fausto/'
 
     if len(sys.argv) != 1:
         parser = argparse.ArgumentParser(
