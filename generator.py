@@ -3,6 +3,7 @@
 import sys
 import argparse
 import os.path
+import threading
 import earley
 
 import importlib.util
@@ -67,11 +68,17 @@ def main(grammar_file, audio_dir=""):
     sentence = earley.generate_random(
         initial, variables, terminals, rules, False)
 
+    audio_thread = None
     if len(audio_dir) != 0 and has_audio:
-        if not handle_audio(sentence, audio_dir):
-            return -3
+        audio_thread = threading.Thread(
+            target=handle_audio, args=(sentence, audio_dir), daemon=True)
+        audio_thread.start()
 
     print(format_sentence(sentence))
+    sys.stdout.flush()
+
+    if audio_thread is not None:
+        audio_thread.join()
 
     return 0
 
