@@ -89,9 +89,12 @@ def main():
     import os.path
     import earley
 
-    grammar_file = os.path.join(os.path.dirname(__file__), 'grammars', 'fausto.gr')
-    initial, variables, terminals, rules = earley.read_file(grammar_file)
-    sentence = earley.generate_random(initial, variables, terminals, rules, False)
+    if not sys.stdin.isatty():
+        sentence = sys.stdin.readline().strip()
+    else:
+        grammar_file = os.path.join(os.path.dirname(__file__), 'grammars', 'fausto.gr')
+        initial, variables, terminals, rules = earley.read_file(grammar_file)
+        sentence = earley.generate_random(initial, variables, terminals, rules, False)
     message = sentence[0].upper() + sentence[1:] if sentence else sentence
 
     print(generate_message_balloon(message, 30))
