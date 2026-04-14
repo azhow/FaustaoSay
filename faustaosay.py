@@ -85,10 +85,18 @@ def faustao():
     return fausto
 
 
-if __name__ == '__main__':
-    stdin_input = ''
-    for line in sys.stdin:
-        stdin_input += line
+def main():
+    import os.path
+    import earley
 
-    print(generate_message_balloon(stdin_input.strip('\n'), 30))
+    grammar_file = os.path.join(os.path.dirname(__file__), 'grammars', 'fausto.gr')
+    initial, variables, terminals, rules = earley.read_file(grammar_file)
+    sentence = earley.generate_random(initial, variables, terminals, rules, False)
+    message = sentence[0].upper() + sentence[1:] if sentence else sentence
+
+    print(generate_message_balloon(message, 30))
     print(faustao())
+
+
+if __name__ == '__main__':
+    main()
