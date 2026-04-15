@@ -2,10 +2,35 @@
 
 ![](faustaosay.png)
 
+## Installation
+
+### Using uv (recommended)
+
+Install as a tool globally:
+```
+uv tool install .
+```
+
+With audio support:
+```
+uv tool install ".[audio]"
+```
+
+Then run it anywhere:
+```
+faustaosay
+```
+
+### Running without installing
+
+```
+uv run faustaosay
+```
+
 ## Dependencies
 
 - Python3.9
-- playsound python module
+- playsound python module (optional, for audio)
 
 ## How to use:
 
